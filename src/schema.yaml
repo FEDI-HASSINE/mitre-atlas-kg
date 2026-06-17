@@ -1,0 +1,89 @@
+# src/schema.yaml
+nodes:
+  - name: Tactic
+    properties:
+      - id
+      - name
+      - description
+      - created_date
+      - modified_date
+
+  - name: Technique
+    properties:
+      - id
+      - name
+      - description
+      - maturity
+      - severity
+      - cvss_score
+      - first_seen
+      - last_seen
+      - last_updated        # ← NOUVEAU : date de dernière mise à jour
+
+  - name: Subtechnique
+    properties:
+      - id
+      - name
+      - description
+      - subtechnique_of
+
+  - name: Mitigation
+    properties:
+      - id
+      - name
+      - description
+      - mitigation_category
+      - ml_lifecycle
+      - owned_by
+
+  - name: CaseStudy
+    properties:
+      - id
+      - name
+      - summary
+      - incident_date
+      - incident_date_granularity
+      - reporter
+      - actor
+      - target
+      - case_study_type
+
+  - name: Actor
+    properties:
+      - name
+      - description
+
+  - name: Component
+    properties:
+      - name
+      - description
+
+relationships:
+  - name: BELONGS_TO
+    from: Technique
+    to: Tactic
+
+  - name: SUBTECHNIQUE_OF
+    from: Subtechnique
+    to: Technique
+
+  - name: MITIGATES
+    from: Mitigation
+    to: Technique
+
+  - name: ILLUSTRATES
+    from: CaseStudy
+    to: Technique
+
+  - name: USES
+    from: Actor
+    to: Technique
+
+  - name: TARGETS
+    from: Technique
+    to: Component
+
+  - name: PRECEDES                    # ← NOUVEAU
+    from: Technique
+    to: Technique
+    description: "Cette technique est généralement utilisée avant celle-ci dans une chaîne d'attaque"

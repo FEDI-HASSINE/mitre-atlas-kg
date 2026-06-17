@@ -1,0 +1,36 @@
+mitigation_id,mitigation_name,owned_by
+AML.M0001,Limit Public Release of Information,multiple_teams
+AML.M0002,Limit Model Artifact Release,multiple_teams
+AML.M0003,Verify AI Artifacts,ml_engineers
+AML.M0004,Maintain AI Dataset Provenance,data_team
+AML.M0005,AI Bill of Materials,security_team
+AML.M0006,Input and Output Validation for AI Agent Components,application_developers
+AML.M0007,Generative AI Guardrails,multiple_teams
+AML.M0008,Generative AI Guidelines,security_team
+AML.M0009,Generative AI Model Alignment,ml_engineers
+AML.M0010,AI Telemetry Logging,multiple_teams
+AML.M0011,Control Access to AI Models and Data in Production,multiple_teams
+AML.M0012,User Training,security_team
+AML.M0013,Vulnerability Scanning,security_team
+AML.M0014,Restrict Library Loading,infrastructure_team
+AML.M0015,Segmentation of AI Agent Components,infrastructure_team
+AML.M0016,Restrict AI Agent Tool Invocation on Untrusted Data,application_developers
+AML.M0017,Human In-the-Loop for AI Agent Actions,multiple_teams
+AML.M0018,AI Agent Tools Permissions Configuration,application_developers
+AML.M0019,Single-User AI Agent Permissions Configuration,application_developers
+AML.M0020,Privileged AI Agent Permissions Configuration,multiple_teams
+AML.M0021,AI Supply Chain Reputation Inflation,security_team
+AML.M0022,AI Supply Chain Rug Pull,security_team
+AML.M0023,Corrupt AI Model,ml_engineers
+AML.M0024,Delay Execution of LLM Instructions,application_developers
+AML.M0025,Evade AI Model,ml_engineers
+AML.M0026,Exploitation for Defense Evasion,security_team
+AML.M0027,False RAG Entry Injection,multiple_teams
+AML.M0028,Impersonation,security_team
+AML.M0029,Jailbreak,multiple_teams
+AML.M0030,LLM Prompt Obfuscation,application_developers
+AML.M0031,LLM Trusted Output Components Manipulation,application_developers
+AML.M0032,Manipulate User LLM Chat History,multiple_teams
+AML.M0033,Masquerading,security_team
+AML.M0034,Modify AI Agent Configuration,multiple_teams
+AML.M0035,Virtualization/Sandbox Evasion,infrastructure_team
