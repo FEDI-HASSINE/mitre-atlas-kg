@@ -648,7 +648,7 @@ The system is deployed on AWS and accessible via REST API.
                 
                 # Metrics
                 summary = result.get('summary', {})
-                total = sum(summary.values())
+                total = summary.get('total', sum(summary.values()))
                 
                 col1, col2, col3, col4, col5 = st.columns(5)
                 with col1:

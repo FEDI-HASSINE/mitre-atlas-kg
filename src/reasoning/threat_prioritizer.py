@@ -66,10 +66,23 @@ class ThreatPrioritizer:
         return score
     
     def get_summary(self, threats):
-        """Summary of threats by severity"""
+        """
+        Summary of threats by severity
+        
+        Args:
+            threats: List of threats
+            
+        Returns:
+            dict: Summary with counters including total
+        """
         summary = {'critical': 0, 'high': 0, 'medium': 0, 'low': 0}
+        
         for t in threats:
             severity = t.get('severity', 'medium').lower()
             if severity in summary:
                 summary[severity] += 1
-        return summary 
+        
+        # Add total
+        summary['total'] = sum(summary.values())
+        
+        return summary
