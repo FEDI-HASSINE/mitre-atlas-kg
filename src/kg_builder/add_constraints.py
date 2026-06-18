@@ -22,7 +22,7 @@ class ConstraintInstantiator:
         self.driver.close()
 
     def add_constraints(self, tx):
-        """Ajoute toutes les contraintes d'unicité"""
+        """Add all uniqueness constraints"""
         constraints = [
             "CREATE CONSTRAINT tactic_id_unique IF NOT EXISTS FOR (t:Tactic) REQUIRE t.id IS UNIQUE",
             "CREATE CONSTRAINT technique_id_unique IF NOT EXISTS FOR (t:Technique) REQUIRE t.id IS UNIQUE",
@@ -41,17 +41,17 @@ class ConstraintInstantiator:
                 success_count += 1
             except Exception as e:
                 if "already exists" in str(e):
-                    print(f"   ℹ️ Déjà existant")
+                    print(f"   ℹ️ Already exists")
                 else:
-                    print(f"   ❌ Erreur: {e}")
+                    print(f"   ❌ Error: {e}")
         
         return success_count
 
     def show_constraints(self, tx):
-        """Affiche les contraintes existantes"""
+        """Display existing constraints"""
         result = tx.run("SHOW CONSTRAINTS")
         records = list(result)
-        print("\n📊 Contraintes existantes:")
+        print("\n📊 Existing constraints:")
         print("=" * 60)
         for r in records:
             name = r.get('name', 'N/A')
@@ -62,22 +62,22 @@ class ConstraintInstantiator:
         return len(records)
 
     def instanciate(self):
-        """Instancie toutes les contraintes"""
-        print("🚀 Ajout des contraintes Neo4j")
+        """Instantiates all constraints"""
+        print("Added Neo4j constraints")
         print("=" * 60)
         
         with self.driver.session() as session:
-            # Afficher les contraintes existantes
+            # Display existing constraints
             before = session.execute_write(self.show_constraints)
             
-            print("\n📥 Ajout des nouvelles contraintes...")
+            print("\n📥 Adding new constraints...")
             added = session.execute_write(self.add_constraints)
             
-            # Afficher les contraintes après
+            # Display constraints after
             after = session.execute_write(self.show_constraints)
             
-            print(f"\n✅ {added} contraintes ajoutées")
-            print(f"📊 Total contraintes: {after}")
+            print(f"\n✅ {added} constraints added")
+            print(f"📊 Total constraints: {after}")
 
 
 if __name__ == "__main__":

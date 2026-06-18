@@ -1,6 +1,6 @@
 # src/reasoning/prompts.py
 """
-Prompts pour le Reasoning Engine
+Prompts for the Reasoning Engine
 """
 
 SYSTEM_ANALYSIS_PROMPT = """

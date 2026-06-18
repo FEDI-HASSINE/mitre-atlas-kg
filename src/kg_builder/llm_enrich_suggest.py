@@ -12,7 +12,7 @@ load_dotenv()
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini")
 
-# Les 6 techniques à enrichir
+# The 6 techniques to enhance
 TARGET_TECHNIQUES = [
     {"id": "AML.T0015", "name": "Evade AI Model"},
     {"id": "AML.T0051", "name": "LLM Prompt Injection"},
@@ -28,7 +28,7 @@ class LLMEnricher:
         self.model = OPENROUTER_MODEL
     
     def _serialize_value(self, value):
-        """Convertit une valeur en format JSON-serialisable"""
+        """Convert a value to JSON-serializable format"""
         if isinstance(value, (date, datetime)):
             return value.isoformat()
         elif isinstance(value, dict):
@@ -39,7 +39,7 @@ class LLMEnricher:
             return value
     
     def find_case_studies(self, technique_id, yaml_path):
-        """Trouve les case studies associés à une technique"""
+        """Find the case studies associated with a technique"""
         with open(yaml_path, 'r', encoding='utf-8') as f:
             data = yaml.safe_load(f)
         
@@ -50,7 +50,7 @@ class LLMEnricher:
                 if isinstance(tech, dict):
                     tech = tech.get('id')
                 if tech == technique_id:
-                    # S'assurer que tout est sérialisable
+                    # Ensure that everything is serializable
                     cs_copy = {
                         'id': cs.get('id'),
                         'name': cs.get('name'),
@@ -64,31 +64,31 @@ class LLMEnricher:
         return related_cases
     
     def suggest_enrichment(self, technique_id, technique_name, case_studies):
-        """Utilise LLM pour suggérer les champs d'enrichissement"""
-        # S'assurer que toutes les données sont sérialisables
+        """Use LLM to suggest enrichment fields."""
+        # Ensure all data is serializable.
         case_studies_serializable = self._serialize_value(case_studies)
         
         prompt = f"""
-Tu es un expert en sécurité IA et MITRE ATLAS.
+You are an AI security and MITRE ATLAS expert.
 
-Analyse la technique suivante : **{technique_name} ({technique_id})**
+Analyze the following technique: **{technique_name} ({technique_id})**
 
-Case Studies associés (incidents réels où cette technique a été utilisée) :
+Associated Case Studies (real incidents where this technique was used):
 {json.dumps(case_studies_serializable, indent=2, ensure_ascii=False)}
 
-Suggère les enrichissements suivants pour cette technique :
+Suggest the following enrichments for this technique:
 
-1. **Acteurs** : Quels acteurs (individus, groupes, entreprises) ont utilisé cette technique ? (liste de noms)
-2. **Composants ciblés** : Quels systèmes, composants ou infrastructures sont attaqués par cette technique ? (liste)
-3. **Sévérité** : critical, high, medium, low (estime en fonction de l'impact)
-4. **CVSS Score** : 0.0 - 10.0 (estime un score)
-5. **First Seen** : Date de première observation (YYYY-MM-DD)
-6. **Last Seen** : Date de dernière observation (YYYY-MM-DD)
+1. **Actors**: Which actors (individuals, groups, organizations) have used this technique? (list of names)
+2. **Targeted Components**: Which systems, components, or infrastructures are attacked by this technique? (list)
+3. **Severity**: critical, high, medium, low (estimate based on impact)
+4. **CVSS Score**: 0.0 - 10.0 (estimate a score)
+5. **First Seen**: First observation date (YYYY-MM-DD)
+6. **Last Seen**: Last observation date (YYYY-MM-DD)
 
-Réponds UNIQUEMENT au format JSON VALIDE :
+Respond ONLY in VALID JSON format:
 {{
-  "actors": ["acteur1", "acteur2"],
-  "targeted_components": ["composant1", "composant2"],
+  "actors": ["actor1", "actor2"],
+  "targeted_components": ["component1", "component2"],
   "severity": "critical|high|medium|low",
   "cvss_score": 8.5,
   "first_seen": "2024-01-01",
@@ -125,12 +125,12 @@ Réponds UNIQUEMENT au format JSON VALIDE :
         except json.JSONDecodeError as e:
             return {"error": f"JSON Parse Error: {e}"}
         except requests.exceptions.Timeout:
-            return {"error": "Timeout - L'API ne répond pas"}
+            return {"error": "Timeout - API not responding"}
         except Exception as e:
             return {"error": str(e)}
     
     def export_to_csv(self, results, output_path='data/processed/enrichment_suggestions.csv'):
-        """Exporte les résultats en CSV"""
+        """Export results to CSV"""
         fieldnames = [
             'technique_id', 'technique_name',
             'actors', 'targeted_components',
@@ -156,10 +156,10 @@ Réponds UNIQUEMENT au format JSON VALIDE :
                     'case_studies_count': r.get('case_studies_count', 0)
                 })
         
-        print(f"Exporté vers {output_path}")
+        print(f"Exported to {output_path}")
 
 if __name__ == "__main__":
-    print("Génération des suggestions d'enrichissement")
+    print("Generating enrichment suggestions")
     print("=" * 50)
     
     enricher = LLMEnricher()
@@ -167,14 +167,14 @@ if __name__ == "__main__":
     results = []
     
     for tech in TARGET_TECHNIQUES:
-        print(f"\nTraitement de {tech['name']} ({tech['id']})...")
+        print(f"\nProcessing {tech['name']} ({tech['id']})...")
         
-        # Trouver les case studies
+        # Find case studies
         cases = enricher.find_case_studies(tech['id'], yaml_path)
-        print(f"   → {len(cases)} case studies trouvés")
+        print(f"   → {len(cases)} case studies found")
         
         if not cases:
-            print(f"Aucun case study trouvé, suggestion ignorée")
+            print(f"No case studies found, skipping suggestion")
             results.append({
                 'technique_id': tech['id'],
                 'technique_name': tech['name'],
@@ -189,14 +189,14 @@ if __name__ == "__main__":
             continue
         
         # LLM suggestion
-        print(f"Envoi à l'API... (temps estimé: 5-10 secondes)")
+        print(f"Sending to API... (estimated time: 5-10 seconds)")
         suggestion = enricher.suggest_enrichment(tech['id'], tech['name'], cases)
         
         if 'error' in suggestion:
-            print(f"Erreur: {suggestion['error']}")
+            print(f"Error: {suggestion['error']}")
             suggestion = {}
         else:
-            print(f"Suggestion reçue: {len(suggestion.get('actors', []))} acteurs, {len(suggestion.get('targeted_components', []))} composants")
+            print(f"Suggestion received: {len(suggestion.get('actors', []))} actors, {len(suggestion.get('targeted_components', []))} components")
         
         results.append({
             'technique_id': tech['id'],
@@ -210,9 +210,9 @@ if __name__ == "__main__":
             'case_studies_count': len(cases)
         })
     
-    # Exporter en CSV
+    # Export to CSV
     enricher.export_to_csv(results)
     
     print("\n" + "=" * 50)
-    print("Fichier généré: data/processed/enrichment_suggestions.csv")
-    print("Ouvre-le dans Excel pour vérification manuelle")
+    print("File generated: data/processed/enrichment_suggestions.csv")
+    print("Open it in Excel for manual verification")

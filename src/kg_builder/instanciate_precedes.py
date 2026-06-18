@@ -1,9 +1,9 @@
 # src/kg_builder/instanciate_precedes.py
 """
-Script pour instancier les relations PRECEDES entre techniques
-Basé sur les chaînes d'attaque documentées dans les case studies
-✅ Utilisation de MERGE pour éviter les doublons
-✅ Vérification des relations existantes
+Script to instantiate PRECEDES relationships between techniques
+Based on attack chains documented in case studies
+Use of MERGE to avoid duplicates
+Verification of existing relationships
 """
 
 import os
@@ -26,8 +26,8 @@ class PrecedesInstantiator:
 
     def create_precedes_by_name(self, tx, from_name, to_name):
         """
-        Crée une relation PRECEDES par nom de technique
-        ✅ Utilisation de MERGE pour éviter les doublons
+        Creates a PRECEDES relationship by technique name
+        Use of MERGE to avoid duplicates
         """
         query = """
         MATCH (t1:Technique {name: $from_name})
@@ -44,8 +44,8 @@ class PrecedesInstantiator:
 
     def create_precedes_by_id(self, tx, from_id, to_id):
         """
-        Crée une relation PRECEDES par ID de technique
-        ✅ Utilisation de MERGE pour éviter les doublons
+        Creates a PRECEDES relationship by technique ID
+        Use of MERGE to avoid duplicates
         """
         query = """
         MATCH (t1:Technique {id: $from_id})
@@ -56,26 +56,26 @@ class PrecedesInstantiator:
         result = tx.run(query, from_id=from_id, to_id=to_id)
         record = result.single()
         if record:
-            print(f"   ✅ {record['t1.id']} → PRECEDES → {record['t2.id']}")
+            print(f"   Use of MERGE to avoid duplicates {record['t1.id']} → PRECEDES → {record['t2.id']}")
             return True
         return False
 
     def delete_all_precedes(self, tx):
-        """Supprime toutes les relations PRECEDES (pour nettoyage)"""
+        """Delete all PRECEDES relationships (for cleanup)"""
         query = "MATCH ()-[r:PRECEDES]->() DELETE r"
         result = tx.run(query)
         print("   🗑️ Toutes les relations PRECEDES supprimées")
         return True
 
     def count_precedes(self, tx):
-        """Compte les relations PRECEDES"""
+        """Count the PRECEDES relationships"""
         query = "MATCH ()-[r:PRECEDES]->() RETURN count(r) as count"
         result = tx.run(query)
         record = result.single()
         return record['count'] if record else 0
 
     def show_precedes(self, tx):
-        """Affiche toutes les relations PRECEDES"""
+        """Display all PRECEDES relationships"""
         query = """
         MATCH (t1:Technique)-[r:PRECEDES]->(t2:Technique)
         RETURN t1.name as from_name, t1.id as from_id, t2.name as to_name, t2.id as to_id
@@ -92,12 +92,12 @@ class PrecedesInstantiator:
 
     def instanciate_from_case_studies(self):
         """
-        Instancie les relations PRECEDES à partir des case studies
+        Instanciate the PRECEDES relationships from the case studies
         """
         
-        # Définition des chaînes d'attaque
+        # DDefinition of the attack chains
         attack_chains = [
-            # Chaîne 1: Attaque RAG classique (basée sur AML.CS0035, AML.CS0037)
+            # Chain 1: Classic RAG Attack (based on AML.CS0035, AML.CS0037)
             {
                 "from": "LLM Prompt Crafting",
                 "to": "Prompt Infiltration via Public-Facing Application"
@@ -115,7 +115,7 @@ class PrecedesInstantiator:
                 "to": "Exfiltration via Cyber Means"
             },
             
-            # Chaîne 2: Attaque via agents (basée sur AML.CS0037, AML.CS0039)
+            # Chain 2: Attack via agents (based on AML.CS0037, AML.CS0039)
             {
                 "from": "LLM Prompt Crafting",
                 "to": "AI Agent Tool Invocation"
@@ -125,7 +125,7 @@ class PrecedesInstantiator:
                 "to": "Exfiltration via Cyber Means"
             },
             
-            # Chaîne 3: Attaque via code assistant (basée sur AML.CS0041)
+            # Chain 3: Attack via code assistant (based on AML.CS0041)
             {
                 "from": "LLM Prompt Crafting",
                 "to": "LLM Prompt Obfuscation"
@@ -135,13 +135,13 @@ class PrecedesInstantiator:
                 "to": "AI Supply Chain Compromise"
             },
             
-            # Chaîne 4: Attaque de mémoire (basée sur AML.CS0040)
+            # Chain 4: Attack on memory (based on AML.CS0040)
             {
                 "from": "LLM Prompt Injection",
                 "to": "Memory"
             },
             
-            # Chaîne 5: Attaque d'évasion (basée sur AML.CS0032, AML.CS0043)
+            # Chain 5: Evasion Attack (based on AML.CS0032, AML.CS0043)
             {
                 "from": "Full AI Model Access",
                 "to": "Evade AI Model"
@@ -156,7 +156,7 @@ class PrecedesInstantiator:
         print("=" * 60)
         
         with self.driver.session() as session:
-            # 1. Afficher les relations existantes avant
+            #1. Display existing relationships before
             before_count = session.execute_write(self.count_precedes)
             print(f"   📊 Relations PRECEDES avant: {before_count}")
             
@@ -164,7 +164,7 @@ class PrecedesInstantiator:
                 session.execute_write(self.show_precedes)
                 print()
             
-            # 2. Créer les relations (MERGE)
+            # 2. Create the relationships (MERGE)
             print("   🔄 Création des relations (MERGE)...")
             success_count = 0
             error_count = 0
@@ -189,7 +189,7 @@ class PrecedesInstantiator:
                         print(f"   ❌ Erreur: {e}")
                         error_count += 1
             
-            # 3. Afficher les relations existantes après
+            #3. Display existing relationships after
             after_count = session.execute_write(self.count_precedes)
             print()
             session.execute_write(self.show_precedes)

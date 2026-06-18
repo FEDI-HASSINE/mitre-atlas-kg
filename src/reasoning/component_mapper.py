@@ -1,12 +1,12 @@
 # src/reasoning/component_mapper.py
 """
-Étape 2: Mapping des composants vers le graphe Neo4j
+Step 2: Mapping components to the Neo4j graph
 """
 
 from src.query.text2cypher import Text2Cypher
 
 class ComponentMapper:
-    """Mappe les composants du système vers les nœuds du graphe"""
+    """Map components from the system to nodes in the graph"""
     
     def __init__(self):
         self.t2c = Text2Cypher()
@@ -14,30 +14,30 @@ class ComponentMapper:
     
     def map_components(self, components):
         """
-        Mappe les composants vers le graphe
+        Map components to the graph
         
         Args:
-            components: Liste des composants extraits
+            components: List of extracted components
             
         Returns:
-            dict: Mapping des composants vers les nœuds Neo4j
+            dict: Mapping of components to Neo4j nodes
         """
         result = {}
         
         for comp in components:
-            # Vérifier le cache
+            # Check the cache
             if comp in self.cache:
                 result[comp] = self.cache[comp]
                 continue
             
-            # Rechercher dans le graphe
+            # Search in the graph
             matched = self._search_component(comp)
             
             if matched:
                 self.cache[comp] = matched
                 result[comp] = matched
             else:
-                # Recherche plus large (CONTAINS)
+                # Search more broadly (CONTAINS)
                 matched = self._search_component_broad(comp)
                 if matched:
                     self.cache[comp] = matched
@@ -48,7 +48,7 @@ class ComponentMapper:
         return result
     
     def _search_component(self, comp):
-        """Recherche exacte d'un composant"""
+        """Exact search for a component"""
         query = f"""
         MATCH (c:Component)
         WHERE toLower(c.name) = toLower('{comp}')
@@ -61,7 +61,7 @@ class ComponentMapper:
         return []
     
     def _search_component_broad(self, comp):
-        """Recherche par similarité (CONTAINS)"""
+        """Search by similarity (CONTAINS)"""
         query = f"""
         MATCH (c:Component)
         WHERE toLower(c.name) CONTAINS toLower('{comp}')
@@ -77,13 +77,13 @@ class ComponentMapper:
     def close(self):
         self.t2c.close()  # src/reasoning/component_mapper.py
 """
-Étape 2: Mapping des composants vers le graphe Neo4j
+Step 2: Mapping components to the Neo4j graph
 """
 
 from src.query.text2cypher import Text2Cypher
 
 class ComponentMapper:
-    """Mappe les composants du système vers les nœuds du graphe"""
+    """Map components from the system to nodes in the graph"""
     
     def __init__(self):
         self.t2c = Text2Cypher()
@@ -91,30 +91,30 @@ class ComponentMapper:
     
     def map_components(self, components):
         """
-        Mappe les composants vers le graphe
+        Map components to the graph
         
         Args:
-            components: Liste des composants extraits
+            components: List of extracted components
             
         Returns:
-            dict: Mapping des composants vers les nœuds Neo4j
+            dict: Mapping of components to Neo4j nodes
         """
         result = {}
         
         for comp in components:
-            # Vérifier le cache
+            # Check the cache
             if comp in self.cache:
                 result[comp] = self.cache[comp]
                 continue
             
-            # Rechercher dans le graphe
+            # Search in the graph
             matched = self._search_component(comp)
             
             if matched:
                 self.cache[comp] = matched
                 result[comp] = matched
             else:
-                # Recherche plus large (CONTAINS)
+                # Search more broadly (CONTAINS)
                 matched = self._search_component_broad(comp)
                 if matched:
                     self.cache[comp] = matched
@@ -126,8 +126,8 @@ class ComponentMapper:
     
     def _search_component(self, comp):
         """
-        Recherche exacte d'un composant
-        ✅ Sécurisé: requête paramétrée
+        Search for a component exactly
+        Secured: parameterized query
         """
         query = """
         MATCH (c:Component)
@@ -143,14 +143,14 @@ class ComponentMapper:
                 if records:
                     return [r['c.name'] for r in records]
         except Exception as e:
-            print(f"⚠️ Erreur recherche composant: {e}")
+            print(f"⚠️ Error searching component: {e}")
         
         return []
     
     def _search_component_broad(self, comp):
         """
-        Recherche par similarité (CONTAINS)
-        ✅ Sécurisé: requête paramétrée
+        Search by similarity (CONTAINS)
+        Secured: parameterized query
         """
         query = """
         MATCH (c:Component)
@@ -167,7 +167,7 @@ class ComponentMapper:
                 if records:
                     return [r['c.name'] for r in records]
         except Exception as e:
-            print(f"⚠️ Erreur recherche composant (broad): {e}")
+            print(f"⚠️ Error searching component (broad): {e}")
         
         return []
     

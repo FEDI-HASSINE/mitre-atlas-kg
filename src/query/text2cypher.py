@@ -28,220 +28,220 @@ class Text2Cypher:
     def _load_examples(self):
         return [
             # ============================================================
-            # REQUÊTES DE BASE
+            # BASIC QUERIES
             # ============================================================
             {
-                "question": "Liste les techniques de la tactique Reconnaissance",
+                "question": "List techniques of the Reconnaissance tactic",
                 "cypher": "MATCH (t:Technique)-[:BELONGS_TO]->(ta:Tactic {name: 'Reconnaissance'}) RETURN t.name, t.id"
             },
             {
-                "question": "Quelles sont les techniques de la tactique Initial Access",
+                "question": "What are the techniques of the Initial Access tactic",
                 "cypher": "MATCH (t:Technique)-[:BELONGS_TO]->(ta:Tactic {name: 'Initial Access'}) RETURN t.name, t.id"
             },
             {
-                "question": "Liste toutes les tactiques",
+                "question": "List all tactics",
                 "cypher": "MATCH (t:Tactic) RETURN t.name, t.id, t.description"
             },
             {
-                "question": "Combien de techniques existent",
-                "cypher": "MATCH (t:Technique) RETURN count(t) as nombre_techniques"
+                "question": "How many techniques exist",
+                "cypher": "MATCH (t:Technique) RETURN count(t) as number_of_techniques"
             },
 
             # ============================================================
-            # RECHERCHE PAR MOT-CLÉ
+            # KEYWORD SEARCH
             # ============================================================
             {
-                "question": "techniques avec Prompt",
+                "question": "techniques with Prompt",
                 "cypher": "MATCH (t:Technique) WHERE t.name CONTAINS 'Prompt' RETURN t.name, t.id"
             },
             {
-                "question": "techniques avec injection",
+                "question": "techniques with injection",
                 "cypher": "MATCH (t:Technique) WHERE toLower(t.name) CONTAINS 'injection' RETURN t.name, t.id"
             },
             {
-                "question": "techniques avec evasion",
+                "question": "techniques with evasion",
                 "cypher": "MATCH (t:Technique) WHERE toLower(t.name) CONTAINS 'evasion' RETURN t.name, t.id"
             },
             {
-                "question": "tactiques avec access",
+                "question": "tactics with access",
                 "cypher": "MATCH (t:Tactic) WHERE toLower(t.name) CONTAINS 'access' RETURN t.name, t.id"
             },
 
             # ============================================================
-            # REQUÊTES AVEC MITIGATIONS
+            # REQUESTS WITH MITIGATIONS
             # ============================================================
             {
-                "question": "Quelles mitigations pour LLM Prompt Injection",
+                "question": "What mitigations exist for LLM Prompt Injection",
                 "cypher": "MATCH (m:Mitigation)-[:MITIGATES]->(t:Technique {name: 'LLM Prompt Injection'}) RETURN m.name, m.id"
             },
             {
-                "question": "Quelles mitigations pour la technique Prompt Injection",
+                "question": "What mitigations exist for the Prompt Injection technique",
                 "cypher": "MATCH (m:Mitigation)-[:MITIGATES]->(t:Technique) WHERE t.name CONTAINS 'Prompt' RETURN m.name, t.name, t.id"
             },
             {
-                "question": "Quelles mitigations s'appliquent à une technique",
+                "question": "What mitigations apply to a technique",
                 "cypher": "MATCH (m:Mitigation)-[:MITIGATES]->(t:Technique) RETURN m.name, t.name LIMIT 10"
             },
             {
-                "question": "Quelles techniques ont des mitigations",
+                "question": "Which techniques have mitigations",
                 "cypher": "MATCH (m:Mitigation)-[:MITIGATES]->(t:Technique) RETURN DISTINCT t.name, t.id"
             },
             {
-                "question": "mitigations pour les développeurs",
+                "question": "mitigations for developers",
                 "cypher": "MATCH (m:Mitigation {owned_by: 'application_developers'}) RETURN m.name, m.id"
             },
 
             # ============================================================
-            # REQUÊTES AVEC MATURITÉ
+            # REQUESTS WITH MATURITY
             # ============================================================
             {
-                "question": "Quelles techniques ont une maturité demonstrated",
+                "question": "Which techniques have demonstrated maturity",
                 "cypher": "MATCH (t:Technique {maturity: 'demonstrated'}) RETURN t.name, t.id"
             },
             {
-                "question": "techniques avec maturité realized",
+                "question": "techniques with realized maturity",
                 "cypher": "MATCH (t:Technique {maturity: 'realized'}) RETURN t.name, t.id"
             },
             {
-                "question": "techniques avec maturité feasible",
+                "question": "techniques with feasible maturity",
                 "cypher": "MATCH (t:Technique {maturity: 'feasible'}) RETURN t.name, t.id"
             },
 
             # ============================================================
-            # REQUÊTES AVEC CASE STUDIES
+            # REQUESTS WITH CASE STUDIES
             # ============================================================
             {
-                "question": "Quels case studies illustrent Prompt Injection",
+                "question": "Which case studies illustrate Prompt Injection",
                 "cypher": "MATCH (c:CaseStudy)-[:ILLUSTRATES]->(t:Technique) WHERE t.name CONTAINS 'Prompt' RETURN c.name, c.summary"
             },
             {
-                "question": "case studies pour la technique Reconnaissance",
+                "question": "case studies for the Reconnaissance technique",
                 "cypher": "MATCH (c:CaseStudy)-[:ILLUSTRATES]->(t:Technique)-[:BELONGS_TO]->(ta:Tactic {name: 'Reconnaissance'}) RETURN c.name, c.summary"
             },
 
             # ============================================================
-            # REQUÊTES COMPLEXES
+            # COMPLEX QUERIES
             # ============================================================
             {
-                "question": "Techniques et leurs tactiques",
-                "cypher": "MATCH (t:Technique)-[:BELONGS_TO]->(ta:Tactic) RETURN ta.name as Tactique, collect(t.name) as Techniques"
+                "question": "Techniques and their tactics",
+                "cypher": "MATCH (t:Technique)-[:BELONGS_TO]->(ta:Tactic) RETURN ta.name as Tactic, collect(t.name) as Techniques"
             },
             {
-                "question": "Tactiques avec nombre de techniques",
-                "cypher": "MATCH (t:Technique)-[:BELONGS_TO]->(ta:Tactic) RETURN ta.name, count(t) as nombre_techniques ORDER BY nombre_techniques DESC"
+                "question": "Tactics with number of techniques",
+                "cypher": "MATCH (t:Technique)-[:BELONGS_TO]->(ta:Tactic) RETURN ta.name, count(t) as number_of_techniques ORDER BY number_of_techniques DESC"
             },
             {
-                "question": "mitigations et les techniques qu'elles protègent",
-                "cypher": "MATCH (m:Mitigation)-[:MITIGATES]->(t:Technique) RETURN m.name, collect(t.name) as techniques_protegees"
+                "question": "mitigations and the techniques they protect",
+                "cypher": "MATCH (m:Mitigation)-[:MITIGATES]->(t:Technique) RETURN m.name, collect(t.name) as protected_techniques"
             },
 
             # ============================================================
-            # ACTEURS (USES)
+            # ACTORS (USES)
             # ============================================================
             {
-                "question": "acteurs qui utilisent LLM Prompt Injection",
+                "question": "actors who use LLM Prompt Injection",
                 "cypher": "MATCH (a:Actor)-[:USES]->(t:Technique {name: 'LLM Prompt Injection'}) RETURN a.name"
             },
             {
-                "question": "techniques utilisées par APT28",
+                "question": "techniques used by APT28",
                 "cypher": "MATCH (a:Actor {name: 'APT28'})-[:USES]->(t:Technique) RETURN t.name, t.id"
             },
             {
-                "question": "quels acteurs utilisent des techniques critiques",
+                "question": "which actors use critical techniques",
                 "cypher": "MATCH (a:Actor)-[:USES]->(t:Technique {severity: 'critical'}) RETURN DISTINCT a.name"
             },
 
             # ============================================================
-            # COMPOSANTS (TARGETS)
+            # COMPONENTS (TARGETS)
             # ============================================================
             {
-                "question": "composants ciblés par LLM Prompt Injection",
+                "question": "components targeted by LLM Prompt Injection",
                 "cypher": "MATCH (t:Technique {name: 'LLM Prompt Injection'})-[:TARGETS]->(c:Component) RETURN c.name"
             },
             {
-                "question": "techniques qui ciblent les systèmes RAG",
+                "question": "techniques that target RAG systems",
                 "cypher": "MATCH (t:Technique)-[:TARGETS]->(c:Component) WHERE c.name CONTAINS 'RAG' RETURN t.name, t.id"
             },
             {
-                "question": "techniques qui ciblent ChatGPT",
+                "question": "techniques that target ChatGPT",
                 "cypher": "MATCH (t:Technique)-[:TARGETS]->(c:Component {name: 'OpenAI ChatGPT'}) RETURN t.name, t.id"
             },
 
             # ============================================================
-            # SÉVÉRITÉ ET CVSS
+            # SEVERITY AND CVSS
             # ============================================================
             {
-                "question": "techniques avec sévérité critical",
+                "question": "techniques with critical severity",
                 "cypher": "MATCH (t:Technique {severity: 'critical'}) RETURN t.name, t.id, t.cvss_score"
             },
             {
-                "question": "techniques avec sévérité high",
+                "question": "techniques with high severity",
                 "cypher": "MATCH (t:Technique {severity: 'high'}) RETURN t.name, t.id, t.cvss_score"
             },
             {
-                "question": "techniques avec CVSS supérieur à 8",
+                "question": "techniques with CVSS greater than 8",
                 "cypher": "MATCH (t:Technique) WHERE t.cvss_score > 8 RETURN t.name, t.id, t.cvss_score ORDER BY t.cvss_score DESC"
             },
 
             # ============================================================
-            # REQUÊTES AVEC OPTIONAL MATCH
+            # REQUESTS WITH OPTIONAL MATCH
             # ============================================================
             {
-                "question": "techniques avec leurs composants ciblés et mitigations",
+                "question": "techniques with their targeted components and mitigations",
                 "cypher": "MATCH (t:Technique)-[:TARGETS]->(c:Component) OPTIONAL MATCH (m:Mitigation)-[:MITIGATES]->(t) RETURN t.name, COLLECT(DISTINCT c.name) as targets, COLLECT(DISTINCT m.name) as mitigations LIMIT 10"
             },
             {
-                "question": "techniques ciblant RAG et mitigations pour développeurs",
+                "question": "techniques targeting RAG and mitigations for developers",
                 "cypher": "MATCH (t:Technique)-[:TARGETS]->(c:Component) WHERE c.name CONTAINS 'RAG' OPTIONAL MATCH (m:Mitigation {owned_by: 'application_developers'})-[:MITIGATES]->(t) RETURN t.name, COLLECT(DISTINCT c.name) as targets, COLLECT(DISTINCT m.name) as mitigations"
             },
             {
-                "question": "quelles techniques ont une sévérité critical et des mitigations",
+                "question": "which techniques have critical severity and mitigations",
                 "cypher": "MATCH (t:Technique {severity: 'critical'}) OPTIONAL MATCH (m:Mitigation)-[:MITIGATES]->(t) RETURN t.name, t.cvss_score, COLLECT(m.name) as mitigations"
             },
             {
-                "question": "acteurs utilisant des techniques qui ciblent l'inférence",
+                "question": "actors using techniques that target inference",
                 "cypher": "MATCH (a:Actor)-[:USES]->(t:Technique)-[:TARGETS]->(c:Component) WHERE c.name CONTAINS 'inference' OR c.name CONTAINS 'RAG' RETURN a.name, COLLECT(DISTINCT t.name) as techniques"
             },
 
             # ============================================================
-            # RELATIONS PRECEDES
+            # PRECEDES RELATIONSHIPS
             # ============================================================
             {
-                "question": "Quelles techniques précèdent LLM Prompt Injection",
+                "question": "Which techniques precede LLM Prompt Injection",
                 "cypher": "MATCH (t1:Technique)-[:PRECEDES]->(t2:Technique {name: 'LLM Prompt Injection'}) RETURN t1.name, t1.id"
             },
             {
-                "question": "Quelles techniques suivent LLM Prompt Crafting",
+                "question": "Which techniques follow LLM Prompt Crafting",
                 "cypher": "MATCH (t1:Technique {name: 'LLM Prompt Crafting'})-[:PRECEDES]->(t2:Technique) RETURN t2.name, t2.id"
             },
             {
-                "question": "Chaîne d'attaque complète pour Prompt Injection",
+                "question": "Complete attack chain for Prompt Injection",
                 "cypher": "MATCH path = (start:Technique)-[:PRECEDES*]->(end:Technique {name: 'LLM Prompt Injection'}) RETURN [n in nodes(path) | n.name] as chain"
             },
             {
-                "question": "Visualiser la chaîne d'attaque RAG",
+                "question": "Visualize the RAG attack chain",
                 "cypher": "MATCH path = (start:Technique {name: 'LLM Prompt Crafting'})-[:PRECEDES*]->(end:Technique {name: 'Exfiltration via Cyber Means'}) RETURN [n in nodes(path) | n.name] as attack_chain"
             },
 
             # ============================================================
-            # REQUÊTES COMBINÉES
+            # COMBINED QUERIES
             # ============================================================
             {
-                "question": "techniques ciblant RAG avec sévérité critical",
+                "question": "techniques targeting RAG with critical severity",
                 "cypher": "MATCH (t:Technique)-[:TARGETS]->(c:Component) WHERE c.name CONTAINS 'RAG' AND t.severity = 'critical' RETURN t.name, t.id, t.cvss_score"
             },
             {
-                "question": "mitigations pour développeurs pour les techniques critiques",
+                "question": "mitigations for developers for critical techniques",
                 "cypher": "MATCH (m:Mitigation {owned_by: 'application_developers'})-[:MITIGATES]->(t:Technique {severity: 'critical'}) RETURN m.name, t.name"
             },
             {
-                "question": "acteurs et composants pour LLM Prompt Injection",
+                "question": "actors and components for LLM Prompt Injection",
                 "cypher": "MATCH (a:Actor)-[:USES]->(t:Technique {name: 'LLM Prompt Injection'}) MATCH (t)-[:TARGETS]->(c:Component) RETURN a.name, collect(c.name) as components"
             }
         ]
 
     def _get_schema_info(self):
-        """Récupère les informations du schéma Neo4j avec cache"""
+        """Retrieve Neo4j schema information with caching"""
         if self._label_cache is None:
             try:
                 with self.driver.session() as session:
@@ -249,11 +249,11 @@ class Text2Cypher:
                     result = session.run("CALL db.labels()")
                     self._label_cache = [r['label'] for r in result]
                     
-                    # Relations
+                    # Relationships
                     result = session.run("CALL db.relationshipTypes()")
                     self._rel_cache = [r['relationshipType'] for r in result]
                     
-                    # Propriétés des techniques
+                    # Technique properties
                     result = session.run("""
                         MATCH (t:Technique) 
                         RETURN keys(t) as properties 
@@ -269,10 +269,10 @@ class Text2Cypher:
         return self._label_cache, self._rel_cache, self._prop_cache
 
     def _build_prompt(self, question):
-        prompt = """Tu es un expert Neo4j Cypher. Convertit la question en langage naturel en requête Cypher VALIDE.
+        prompt = """You are a Neo4j Cypher expert. Translate the natural language question into a VALID Cypher query.
 
-SCHÉMA NEO4J :
-- Nœuds : 
+NEO4J SCHEMA :
+- Nodes : 
   • Tactic : {id, name, description, created_date, modified_date}
   • Technique : {id, name, description, maturity, severity, cvss_score, first_seen, last_seen, last_updated}
   • Subtechnique : {id, name, description, subtechnique_of}
@@ -281,7 +281,7 @@ SCHÉMA NEO4J :
   • Actor : {name}
   • Component : {name}
 
-- Relations :
+- Relationships :
   • BELONGS_TO : (Technique)-[:BELONGS_TO]->(Tactic)
   • SUBTECHNIQUE_OF : (Subtechnique)-[:SUBTECHNIQUE_OF]->(Technique)
   • MITIGATES : (Mitigation)-[:MITIGATES]->(Technique)
@@ -290,60 +290,60 @@ SCHÉMA NEO4J :
   • TARGETS : (Technique)-[:TARGETS]->(Component)
   • PRECEDES : (Technique)-[:PRECEDES]->(Technique)
 
-RÈGLES DE SYNTAXE CYPHER STRICTES (À RESPECTER ABSOLUMENT) :
-1. Le mot-clé WHERE ne peut apparaître qu'après MATCH, OPTIONAL MATCH, ou WITH.
-2. Le mot-clé WHERE ne peut JAMAIS apparaître après RETURN, ORDER BY, SKIP, LIMIT.
-3. Pour filtrer des résultats après un RETURN, utiliser WITH avant le RETURN.
-4. Pour les requêtes avec plusieurs conditions, utiliser plusieurs MATCH ou WITH.
-5. Utilise OPTIONAL MATCH pour les relations qui peuvent ne pas exister.
-6. Utilise COLLECT(DISTINCT ...) pour regrouper sans doublons.
+STRICT CYPHER SYNTAX RULES (MUST BE RESPECTED) :
+1. The WHERE keyword can only appear after MATCH, OPTIONAL MATCH, or WITH.
+2. The WHERE keyword can NEVER appear after RETURN, ORDER BY, SKIP, LIMIT.
+3. To filter results after a RETURN, use WITH before the RETURN.
+4. For queries with multiple conditions, use multiple MATCH or WITH.
+5. Use OPTIONAL MATCH for relationships that may not exist.
+6. Use COLLECT(DISTINCT ...) to group without duplicates.
 
-RÈGLES IMPORTANTES :
-1. Utilise CONTAINS pour la recherche par mot-clé (ex: WHERE t.name CONTAINS 'Prompt')
-2. Utilise toLower() pour une recherche insensible à la casse
-3. Les propriétés disponibles : severity (critical/high/medium/low), cvss_score (float), owned_by (string)
-4. Réponds UNIQUEMENT par la requête Cypher, sans explication, sans markdown, sans backticks
+IMPORTANT RULES :
+1. Use CONTAINS for keyword search (e.g., WHERE t.name CONTAINS 'Prompt')
+2. Use toLower() for case-insensitive search
+3. Available properties : severity (critical/high/medium/low), cvss_score (float), owned_by (string)
+4. Respond ONLY with the Cypher query, no explanation, no markdown, no backticks
 
-CHAIN OF THOUGHT - Réfléchis étape par étape :
+CHAIN OF THOUGHT - Think step by step :
 
-Étape 1: Analyser la question
-- Quel est le sujet principal ?
-- Quelles sont les conditions ?
+Step 1: Analyze the question
+- What is the main subject ?
+- What are the conditions ?
 
-Étape 2: Identifier les nœuds nécessaires
-- Quels nœuds sont requis ?
-- Quelles sont leurs propriétés ?
+Step 2: Identify required nodes
+- Which nodes are needed ?
+- What are their properties ?
 
-Étape 3: Identifier les relations
-- Quelles relations relient ces nœuds ?
+Step 3: Identify relationships
+- Which relationships connect these nodes ?
 
-Étape 4: Construire MATCH
-- Commencer par le nœud principal
+Step 4: Build MATCH
+- Start with the main node
 
-Étape 5: Ajouter WHERE
-- Filtrer par propriétés
+Step 5: Add WHERE
+- Filter by properties
 
-Étape 6: Construire RETURN
-- Quelles informations retourner ?
+Step 6: Build RETURN
+- What information to return ?
 
-EXEMPLES DE RAISONNEMENT :
+REASONING EXAMPLES :
 
-Question: "Quelles techniques ciblent les systèmes RAG ?"
-Réflexion:
-1. Sujet: Technique, condition: cible RAG
-2. Nœuds: Technique, Component
-3. Relations: TARGETS
+Question: "Which techniques target RAG systems ?"
+Reasoning:
+1. Subject: Technique, condition: targets RAG
+2. Nodes: Technique, Component
+3. Relationships: TARGETS
 4. MATCH: (t:Technique)-[:TARGETS]->(c:Component)
 5. WHERE: c.name CONTAINS 'RAG'
 6. RETURN: t.name, t.id
 
 Cypher: MATCH (t:Technique)-[:TARGETS]->(c:Component) WHERE c.name CONTAINS 'RAG' RETURN t.name, t.id
 
-Question: "Techniques avec sévérité critical et leurs mitigations"
-Réflexion:
-1. Sujet: Technique, condition: severity = critical
-2. Nœuds: Technique, Mitigation
-3. Relations: MITIGATES (optionnelle)
+Question: "Techniques with critical severity and their mitigations"
+Reasoning:
+1. Subject: Technique, condition: severity = critical
+2. Nodes: Technique, Mitigation
+3. Relationships: MITIGATES (optional)
 4. MATCH: (t:Technique {severity: 'critical'})
 5. OPTIONAL MATCH: (m:Mitigation)-[:MITIGATES]->(t)
 6. RETURN: t.name, t.id, COLLECT(DISTINCT m.name)
@@ -355,10 +355,10 @@ Cypher: MATCH (t:Technique {severity: 'critical'}) OPTIONAL MATCH (m:Mitigation)
             prompt += f"Question: {ex['question']}\nCypher: {ex['cypher']}\n\n"
 
         prompt += f"Question: {question}\n"
-        prompt += "Réflexion:\n"
-        prompt += "1. Sujet: "
-        prompt += "2. Nœuds: "
-        prompt += "3. Relations: "
+        prompt += "Reasoning:\n"
+        prompt += "1. Subject: "
+        prompt += "2. Nodes: "
+        prompt += "3. Relationships: "
         prompt += "4. MATCH: "
         prompt += "5. WHERE: "
         prompt += "6. RETURN: "
@@ -389,22 +389,22 @@ Cypher: MATCH (t:Technique {severity: 'critical'}) OPTIONAL MATCH (m:Mitigation)
             )
 
             if response.status_code != 200:
-                return f"ERREUR API: {response.status_code} - {response.text}"
+                return f"API ERROR: {response.status_code} - {response.text}"
 
             result = response.json()
             cypher = result['choices'][0]['message']['content'].strip()
             cypher = cypher.replace('```cypher', '').replace('```', '').strip()
             
-            # Nettoyer le raisonnement si présent
+            # Clean reasoning if present
             if 'Cypher:' in cypher:
                 cypher = cypher.split('Cypher:')[-1].strip()
             
             return cypher
 
         except requests.exceptions.Timeout:
-            return "ERREUR: Timeout - L'API ne répond pas"
+            return "ERROR: Timeout - API not responding"
         except Exception as e:
-            return f"ERREUR: {str(e)}"
+            return f"ERROR: {str(e)}"
 
     def validate_cypher(self, cypher):
         try:
@@ -416,32 +416,32 @@ Cypher: MATCH (t:Technique {severity: 'critical'}) OPTIONAL MATCH (m:Mitigation)
 
     def validate_semantic(self, cypher):
         """
-        Vérifie que la requête Cypher est sémantiquement correcte
-        - Vérifie que les labels existent
-        - Vérifie que les relations existent
+        Verify that the Cypher query is semantically correct
+        - Verify that the labels exist
+        - Verify that the relationships exist
         """
         try:
             labels, rels, _ = self._get_schema_info()
             
-            # Extraire les labels mentionnés
+            # Extract mentioned labels
             label_pattern = r'MATCH\s*\([^)]*:(\w+)'
             found_labels = re.findall(label_pattern, cypher)
             
-            # Extraire les relations mentionnées
+            # Extract mentioned relationships
             rel_pattern = r'\[[^)]*:(\w+)\]'
             found_rels = re.findall(rel_pattern, cypher)
             
             errors = []
             
-            # Vérifier les labels
+            # Check labels
             for label in found_labels:
                 if label not in labels:
-                    errors.append(f"Label '{label}' n'existe pas dans la base")
+                    errors.append(f"Label '{label}' does not exist in the database")
             
-            # Vérifier les relations
+            # Check relationships
             for rel in found_rels:
                 if rel not in rels:
-                    errors.append(f"Relation '{rel}' n'existe pas dans la base")
+                    errors.append(f"Relationship '{rel}' does not exist in the database")
             
             if errors:
                 return False, "; ".join(errors)
@@ -459,6 +459,7 @@ Cypher: MATCH (t:Technique {severity: 'critical'}) OPTIONAL MATCH (m:Mitigation)
                 return [record.data() for record in result]
         except Exception as e:
             return {"error": str(e)}
+    
     def sanitize_cypher(self, cypher):
         """
         Sanitize and secure Cypher query before execution.
@@ -466,7 +467,7 @@ Cypher: MATCH (t:Technique {severity: 'critical'}) OPTIONAL MATCH (m:Mitigation)
         - Enforce LIMIT
         - Validate syntax
         """
-        # 1. Bloquer les mots-clés dangereux
+        #1. Block dangerous keywords
         dangerous_keywords = [
             'CREATE', 'DELETE', 'SET', 'REMOVE', 'MERGE',
             'DROP', 'LOAD CSV', 'CALL dbms', 'CALL apoc',
@@ -477,58 +478,59 @@ Cypher: MATCH (t:Technique {severity: 'critical'}) OPTIONAL MATCH (m:Mitigation)
         cypher_upper = cypher.upper()
         for keyword in dangerous_keywords:
             if keyword in cypher_upper:
-                raise ValueError(f"❌ Keyword '{keyword}' is not allowed (read-only mode)")
+                raise ValueError(f"Keyword '{keyword}' is not allowed (read-only mode)")
         
-        # 2. Vérifier les labels autorisés
+        # 2. Check allowed labels
         allowed_labels = ['Tactic', 'Technique', 'Subtechnique', 'Mitigation', 
                          'CaseStudy', 'Actor', 'Component']
         
-        # Extraction simple des labels
+        # Simple label extraction
         import re
         label_pattern = r'MATCH\s*\([^)]*:(\w+)'
         found_labels = re.findall(label_pattern, cypher)
         
         for label in found_labels:
             if label not in allowed_labels:
-                raise ValueError(f"❌ Label '{label}' is not allowed")
+                raise ValueError(f"Label '{label}' is not allowed")
         
-        # 3. Enforcer LIMIT si absent
+        #3. Enforce LIMIT if absent
         if 'LIMIT' not in cypher_upper and 'COUNT' not in cypher_upper and 'RETURN' in cypher_upper:
             cypher = cypher + ' LIMIT 100'
         
-        # 4. Bloquer les requêtes multi-étapes
+        #4. Block multi-step requests
         if ';' in cypher:
-            # Sépare les requêtes et ne garde que la première
+            # Split and keep only the first query
             cypher = cypher.split(';')[0]
         
         return cypher
+    
     def ask(self, question):
-        print(f"\n🔍 Question: {question}")
+        print(f"\nQuestion: {question}")
 
         cypher = self.text_to_cypher(question)
-        if cypher.startswith("ERREUR:"):
-            print(f"❌ {cypher}")
+        if cypher.startswith("ERROR:"):
+            print(f"{cypher}")
             return {"error": cypher}
 
-        print(f"📝 Cypher généré: {cypher}")
+        print(f"Cypher generated: {cypher}")
 
-        # 1. Validation syntaxique (EXPLAIN)
+        # 1. Syntax validation (EXPLAIN)
         valid, error = self.validate_cypher(cypher)
         if not valid:
-            print(f"❌ Cypher invalide (syntaxe): {error}")
-            return {"error": f"Cypher invalide: {error}", "cypher": cypher}
+            print(f"Invalid Cypher (syntax): {error}")
+            return {"error": f"Invalid Cypher: {error}", "cypher": cypher}
 
-        # 2. Validation sémantique (NOUVEAU)
+        # 2. Semantic Validation
         valid, semantic_error = self.validate_semantic(cypher)
         if not valid:
-            print(f"⚠️ Avertissement sémantique: {semantic_error}")
+            print(f"Semantic warning: {semantic_error}")
 
         results = self.execute(cypher)
         if isinstance(results, dict) and "error" in results:
-            print(f"❌ Erreur d'exécution: {results['error']}")
+            print(f"Execution error: {results['error']}")
             return {"error": results["error"], "cypher": cypher}
 
-        print(f"📊 Résultats: {len(results) if isinstance(results, list) else 0} entrées trouvées")
+        print(f"Results: {len(results) if isinstance(results, list) else 0} entries found")
         
         result_obj = {"cypher": cypher, "results": results}
         if semantic_error:
@@ -541,38 +543,38 @@ Cypher: MATCH (t:Technique {severity: 'critical'}) OPTIONAL MATCH (m:Mitigation)
 
 
 if __name__ == "__main__":
-    print("🚀 Test Text2Cypher avec OpenRouter")
+    print("Text2Cypher Test with OpenRouter")
     print("=" * 50)
 
     t2c = Text2Cypher()
 
     questions = [
-        "techniques avec Prompt",
-        "techniques avec evasion",
-        "quelles mitigations pour LLM Prompt Injection",
-        "Tactiques avec nombre de techniques",
-        "case studies pour la technique Reconnaissance",
-        "acteurs qui utilisent LLM Prompt Injection",
-        "techniques utilisées par APT28",
-        "techniques qui ciblent les systèmes RAG",
-        "composants ciblés par LLM Prompt Injection",
-        "techniques avec sévérité critical",
-        "techniques avec CVSS supérieur à 8",
-        "techniques ciblant RAG avec sévérité critical",
-        "mitigations pour développeurs pour les techniques critiques",
-        "techniques ciblant RAG et mitigations pour développeurs",
-        "Quelles techniques précèdent LLM Prompt Injection",
-        "Chaîne d'attaque complète pour Prompt Injection"
+        "techniques with Prompt",
+        "techniques with evasion",
+        "what mitigations for LLM Prompt Injection",
+        "Tactics with number of techniques",
+        "case studies for the Reconnaissance technique",
+        "actors who use LLM Prompt Injection",
+        "techniques used by APT28",
+        "techniques that target RAG systems",
+        "components targeted by LLM Prompt Injection",
+        "techniques with critical severity",
+        "techniques with CVSS greater than 8",
+        "techniques targeting RAG with critical severity",
+        "mitigations for developers for critical techniques",
+        "techniques targeting RAG and mitigations for developers",
+        "Which techniques precede LLM Prompt Injection",
+        "Complete attack chain for Prompt Injection"
     ]
 
     for q in questions:
         result = t2c.ask(q)
         if "error" in result:
-            print(f"❌ Erreur: {result['error']}")
+            print(f"Error: {result['error']}")
         else:
-            print(f"✅ Succès: {len(result.get('results', []))} résultats")
+            print(f"Success: {len(result.get('results', []))} results")
             if "semantic_warning" in result:
-                print(f"⚠️ {result['semantic_warning']}")
+                print(f"Warning: {result['semantic_warning']}")
         print("-" * 50)
 
     t2c.close()

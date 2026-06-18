@@ -1,6 +1,6 @@
 # src/reasoning/reasoning_engine.py
 """
-Reasoning Engine - Classe principale orchestrant les 5 étapes
+Reasoning Engine - Main class orchestrating the 5 steps
 """
 
 import json
@@ -11,7 +11,7 @@ from .threat_prioritizer import ThreatPrioritizer
 from .report_generator import ReasoningReportGenerator
 
 class ReasoningEngine:
-    """Orchestrateur principal du Reasoning Engine"""
+    """Main orchestrator for the Reasoning Engine"""
     
     def __init__(self):
         self.analyzer = SystemAnalyzer()
@@ -22,10 +22,10 @@ class ReasoningEngine:
     
     def generate_assessment(self, description):
         """
-        Génère une évaluation complète des menaces
+        Generates a comprehensive threat assessment
         
         Args:
-            description: Description textuelle du système
+            description: Textual description of the system
             
         Returns:
             dict: {
@@ -39,23 +39,23 @@ class ReasoningEngine:
         print("🧠 Reasoning Engine - Threat Assessment")
         print("=" * 60)
         
-        # Étape 1: Analyser la description
+        # Step 1: Analyze the description
         print("\n📊 Step 1: Analyzing system description...")
         system_info = self.analyzer.analyze(description)
         print(f"   → System: {system_info.get('system_type', 'Unknown')}")
         print(f"   → Components: {system_info.get('components', [])}")
         
-        # Étape 2: Mapper les composants
+        # Step 2: Map the components
         print("\n📊 Step 2: Mapping components to graph...")
         components = system_info.get('components', [])
         mapped = self.mapper.map_components(components)
         print(f"   → Mapped {len(mapped)} components")
         
-        # Étape 3: Trouver les menaces
+        # Step 3: Find the threats
         print("\n📊 Step 3: Finding threats...")
         threats = self.finder.find_threats(mapped)
         
-        # Menaces additionnelles
+        # Additional threats
         system_type = system_info.get('system_type', '')
         if len(threats) < 3:
             additional = self.finder.find_additional_threats(system_type)
@@ -63,13 +63,13 @@ class ReasoningEngine:
         
         print(f"   → Found {len(threats)} threats")
         
-        # Étape 4: Prioriser
+        # Step 4: Prioritize
         print("\n📊 Step 4: Prioritizing threats...")
         prioritized = self.prioritizer.prioritize(threats)
         summary = self.prioritizer.get_summary(prioritized)
         print(f"   → Critical: {summary['critical']}, High: {summary['high']}, Medium: {summary['medium']}, Low: {summary['low']}")
         
-        # Étape 5: Générer le rapport
+        # Step 5: Generate report
         print("\n📊 Step 5: Generating report...")
         report = self.reporter.generate(description, system_info, prioritized)
         print("   → Report generated")
@@ -85,7 +85,7 @@ class ReasoningEngine:
         }
     
     def save_report(self, report, filename=None):
-        """Sauvegarde le rapport dans un fichier"""
+        """Save the report to a file"""
         if not filename:
             from datetime import datetime
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -101,12 +101,12 @@ class ReasoningEngine:
         return filename
     
     def close(self):
-        """Ferme les connexions"""
+        """Close the connections"""
         self.mapper.close()
         self.finder.close()
 
 
-# Exemple d'utilisation
+# Example of use
 if __name__ == "__main__":
     engine = ReasoningEngine()
     

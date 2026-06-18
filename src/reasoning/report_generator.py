@@ -1,6 +1,6 @@
 # src/reasoning/report_generator.py
 """
-Étape 5: Génération du rapport final
+Step 5: Generating the final report
 """
 
 import requests
@@ -9,7 +9,7 @@ from datetime import datetime
 from .prompts import REPORT_SYNTHESIS_PROMPT, REPORT_SUMMARY_PROMPT
 
 class ReasoningReportGenerator:
-    """Génère le rapport final structuré"""
+    """Generates the final structured report"""
     
     def __init__(self):
         self.api_key = os.getenv("OPENROUTER_API_KEY")
@@ -42,20 +42,20 @@ class ReasoningReportGenerator:
     
     def generate(self, description, system_info, threats):
         """
-        Génère le rapport complet
+        Generates the complete report
         
         Args:
-            description: Description originale
-            system_info: Informations du système
-            threats: Menaces priorisées
+            description: Original description
+            system_info: System information
+            threats: Prioritized threats
             
         Returns:
-            str: Rapport en markdown
+            str: Report in markdown
         """
-        # Formater les menaces
+        # Format the threats
         threats_str = self._format_threats(threats)
         
-        # Générer le rapport
+        # Generate the report
         prompt = REPORT_SYNTHESIS_PROMPT.format(
             description=description,
             system_info=str(system_info),
@@ -67,11 +67,11 @@ class ReasoningReportGenerator:
         if not report:
             return self._generate_fallback(description, system_info, threats)
         
-        # Ajouter l'en-tête et le pied de page
+        # Add header and footer
         return self._wrap_report(report, description)
     
     def _format_threats(self, threats):
-        """Formate les menaces pour le prompt"""
+        """Format the threats for the prompt"""
         if not threats:
             return "No threats identified."
         
@@ -107,7 +107,7 @@ class ReasoningReportGenerator:
         return header + report + footer
     
     def _generate_fallback(self, description, system_info, threats):
-        """Rapport de secours en cas d'échec LLM"""
+        """Fallback report in case of LLM failure"""
         lines = []
         lines.append("# Threat Assessment Report (Fallback)")
         lines.append(f"\n**System:** {system_info.get('system_type', 'Unknown')}")
@@ -126,6 +126,6 @@ class ReasoningReportGenerator:
         return "\n".join(lines)
     
     def generate_summary(self, report):
-        """Génère un résumé exécutif"""
+        """Generates an executive summary"""
         prompt = REPORT_SUMMARY_PROMPT.format(report=report)
         return self._call_llm(prompt) or "Executive summary unavailable."

@@ -69,29 +69,29 @@ class EnrichmentInstantiator:
             rows = list(reader)
         
         with self.driver.session() as session:
-            print("Instanciation des enrichissements...")
+            print("Instantiation of enrichments...")
             
             for row in rows:
                 tech_id = row['technique_id']
                 tech_name = row['technique_name']
                 
-                print(f"\nTraitement de {tech_name} ({tech_id})")
+                print(f"\nProcessing {tech_name} ({tech_id})")
                 
-                # 1. Créer les acteurs
+                # 1. Create actors.
                 actors = [a.strip() for a in row['actors'].split(';') if a.strip()]
                 for actor in actors:
                     session.execute_write(self.create_actor, actor)
                     session.execute_write(self.link_uses, tech_id, actor)
                     print(f" Acteur: {actor}")
                 
-                # 2. Créer les composants
+                # 2. Create components.
                 components = [c.strip() for c in row['targeted_components'].split(';') if c.strip()]
                 for component in components:
                     session.execute_write(self.create_component, component)
                     session.execute_write(self.link_targets, tech_id, component)
                     print(f" Composant: {component}")
                 
-                # 3. Ajouter les propriétés
+                # 3. Add properties.
                 session.execute_write(
                     self.set_technique_properties,
                     tech_id,
@@ -102,7 +102,7 @@ class EnrichmentInstantiator:
                 )
                 print(f" Propriétés: severity={row['severity']}, cvss={row['cvss_score']}")
             
-            # 4. Ajouter owned_by aux mitigations (exemple)
+            # 4. Add owned_by to mitigations (example).
             mitigation_owners = [
                 {"mitigation": "Input and Output Validation for AI Agent Components", "owner": "application_developers"},
                 {"mitigation": "Generative AI Guardrails", "owner": "application_developers"},
@@ -111,15 +111,15 @@ class EnrichmentInstantiator:
                 {"mitigation": "Control Access to AI Models and Data in Production", "owner": "security_team"},
             ]
             
-            print("\nAjout des owned_by pour les mitigations...")
+            print("\nAdding owned_by for mitigations...")
             for item in mitigation_owners:
                 session.execute_write(self.set_mitigation_owner, item['mitigation'], item['owner'])
                 print(f" {item['mitigation']} → {item['owner']}")
             
-            print("\nInstanciation terminée !")
+            print("\nInstantiation completed!")
 
 if __name__ == "__main__":
-    print("Instanciation des enrichissements")
+    print("Instantiation of enrichments")
     print("=" * 50)
     
     instantiator = EnrichmentInstantiator(URI, USER, PASSWORD)

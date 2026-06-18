@@ -1,6 +1,6 @@
 # tests/test_reasoning.py
 """
-Tests unitaires pour le Reasoning Engine
+Unit tests for the Reasoning Engine
 """
 
 import pytest
@@ -18,7 +18,7 @@ def engine():
 
 
 def test_system_analyzer(engine):
-    """Test de l'analyseur de système"""
+    """Test the system analyzer"""
     description = "This is a RAG chatbot with an API."
     result = engine.analyzer.analyze(description)
     
@@ -28,7 +28,7 @@ def test_system_analyzer(engine):
 
 
 def test_component_mapper(engine):
-    """Test du mappage de composants"""
+    """Test the component mapper"""
     components = ['RAG', 'API']
     result = engine.mapper.map_components(components)
     
@@ -37,7 +37,7 @@ def test_component_mapper(engine):
 
 
 def test_threat_finder(engine):
-    """Test du finder de menaces"""
+    """Test the threat finder"""
     mapped = {'RAG': ['RAG-based systems']}
     threats = engine.finder.find_threats(mapped)
     
@@ -47,7 +47,7 @@ def test_threat_finder(engine):
 
 
 def test_threat_prioritizer(engine):
-    """Test du prioritizer"""
+    """Test the threat prioritizer"""
     threats = [
         {'severity': 'critical', 'cvss_score': 9.1},
         {'severity': 'low', 'cvss_score': 3.0}
@@ -59,7 +59,7 @@ def test_threat_prioritizer(engine):
 
 
 def test_full_workflow(engine):
-    """Test du workflow complet"""
+    """Test the full workflow"""
     description = "A simple RAG chatbot with vector database."
     result = engine.generate_assessment(description)
     
@@ -70,7 +70,7 @@ def test_full_workflow(engine):
 
 
 def test_fallback_analysis(engine):
-    """Test de l'analyse de secours"""
+    """Test the fallback analysis"""
     description = ""
     result = engine.analyzer._fallback_analysis(description)
     
@@ -79,7 +79,7 @@ def test_fallback_analysis(engine):
 
 
 def test_report_save(engine, tmp_path):
-    """Test de la sauvegarde du rapport"""
+    """Test the report save"""
     report = "# Test Report"
     filename = str(tmp_path / "test_report.md")
     result = engine.save_report(report, filename)

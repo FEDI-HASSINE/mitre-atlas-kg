@@ -1,9 +1,9 @@
 # src/reasoning/config.py
 """
-Configuration du Reasoning Engine
+Configuration of the Reasoning Engine
 """
 
-# Catégories de menaces
+# Threat Categories
 THREAT_SEVERITIES = {
     'critical': 4,
     'high': 3,
@@ -11,7 +11,7 @@ THREAT_SEVERITIES = {
     'low': 1
 }
 
-# Couleurs pour le rapport
+# Colors for the report
 SEVERITY_COLORS = {
     'critical': '🔴',
     'high': '🟠',
@@ -19,7 +19,7 @@ SEVERITY_COLORS = {
     'low': '🟢'
 }
 
-# Composants connus pour mapping
+# Known components for mapping
 KNOWN_COMPONENTS = [
     'RAG', 'Vector DB', 'LLM', 'API', 'Knowledge Base',
     'ChatGPT', 'Copilot', 'Slack AI', 'Email System',
@@ -27,10 +27,10 @@ KNOWN_COMPONENTS = [
     'GitHub Copilot', 'Jira', 'Salesforce'
 ]
 
-# Techniques par composant (cache)
+# Component-based techniques (cache)
 TECHNIQUE_CACHE = {}
 
-# Seuils de priorisation
+# Priority thresholds
 PRIORITY_THRESHOLDS = {
     'critical_cvss': 9.0,
     'high_cvss': 7.0,

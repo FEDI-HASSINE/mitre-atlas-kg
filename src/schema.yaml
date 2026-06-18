@@ -18,7 +18,7 @@ nodes:
       - cvss_score
       - first_seen
       - last_seen
-      - last_updated        # ← NOUVEAU : date de dernière mise à jour
+      - last_updated        # NEW: last update date
 
   - name: Subtechnique
     properties:

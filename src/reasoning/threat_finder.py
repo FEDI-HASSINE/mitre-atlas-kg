@@ -1,26 +1,26 @@
 # src/reasoning/threat_finder.py
 """
-Étape 3: Recherche des menaces dans le graphe
+Step 3: Finding threats in the graph
 """
 
 from src.query.text2cypher import Text2Cypher
 
 class ThreatFinder:
-    """Trouve les menaces pour les composants identifiés"""
+    """Finds threats for the identified components"""
     
     def __init__(self):
         self.t2c = Text2Cypher()
     
     def find_threats(self, mapped_components):
         """
-        Trouve les techniques qui ciblent les composants
-        ✅ Sécurisé: requêtes paramétrées
+        Finds the techniques that target the components
+        Secured: parameterized queries
         
         Args:
-            mapped_components: Dict {composant: [noms_neo4j]}
+            mapped_components: Dict {component: [neo4j_names]}
             
         Returns:
-            list: Menaces avec détails
+            list: Threats with details
         """
         threats = []
         seen = set()
@@ -30,7 +30,7 @@ class ThreatFinder:
                 continue
             
             for neo4j_name in neo4j_names:
-                # ✅ Requête paramétrée (pas d'interpolation)
+                # Parameterized query (no interpolation)
                 query = """
                 MATCH (t:Technique)-[:TARGETS]->(c:Component {name: $component_name})
                 OPTIONAL MATCH (m:Mitigation)-[:MITIGATES]->(t)
@@ -65,22 +65,22 @@ class ThreatFinder:
                                     'targeted_component': r.get('targeted_component')
                                 })
                 except Exception as e:
-                    print(f"⚠️ Erreur recherche menaces pour {neo4j_name}: {e}")
+                    print(f"⚠️ Error searching for threats for {neo4j_name}: {e}")
         
         return threats
     
     def find_additional_threats(self, system_type):
         """
-        Menaces supplémentaires basées sur le type de système
-        ✅ Sécurisé: requêtes paramétrées
+        Additional threats based on the system type
+        Secured: parameterized queries
         
         Args:
-            system_type: Type de système
+            system_type: Type of system
             
         Returns:
-            list: Menaces supplémentaires
+            list: Additional threats
         """
-        # Mapping des types de systèmes vers techniques courantes
+        # Mapping of system types to common techniques
         system_mapping = {
             'RAG': ['AML.T0051', 'AML.T0052'],
             'chatbot': ['AML.T0051', 'AML.T0065'],
@@ -97,7 +97,7 @@ class ThreatFinder:
         if not threat_ids:
             return []
         
-        # ✅ Requête paramétrée avec liste
+        # Parameterized query with list
         query = """
         MATCH (t:Technique)
         WHERE t.id IN $threat_ids
@@ -126,7 +126,7 @@ class ThreatFinder:
                         'actors': r.get('actors', [])
                     } for r in records]
         except Exception as e:
-            print(f"⚠️ Erreur recherche menaces additionnelles: {e}")
+            print(f"⚠️ Error searching for additional threats: {e}")
         
         return []
     

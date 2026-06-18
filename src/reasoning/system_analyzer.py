@@ -1,6 +1,6 @@
 # src/reasoning/system_analyzer.py
 """
-Étape 1: Analyse de la description du système
+Step 1: System Description Analysis
 """
 
 import json
@@ -11,14 +11,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class SystemAnalyzer:
-    """Analyse la description d'un système IA"""
+    """Analyse the description of an AI system"""
     
     def __init__(self):
         self.api_key = os.getenv("OPENROUTER_API_KEY")
         self.model = os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini")
     
     def _call_llm(self, prompt):
-        """Appelle l'API OpenRouter"""
+        """Call the OpenRouter API"""
         try:
             response = requests.post(
                 url="https://openrouter.ai/api/v1/chat/completions",
@@ -44,13 +44,13 @@ class SystemAnalyzer:
     
     def analyze(self, description):
         """
-        Analyse la description et retourne une structure JSON
+        Analyze the description and return a structured JSON
         
         Args:
-            description: Description textuelle du système
+            description: Textual description of the system
             
         Returns:
-            dict: System info structuré
+            dict: Structured system information
         """
         from .prompts import SYSTEM_ANALYSIS_PROMPT
         
@@ -61,7 +61,7 @@ class SystemAnalyzer:
             return self._fallback_analysis(description)
         
         try:
-            # Nettoyer la réponse
+            # Clean up the response
             cleaned = response.strip()
             if cleaned.startswith('```json'):
                 cleaned = cleaned[7:]
@@ -72,8 +72,8 @@ class SystemAnalyzer:
             return self._fallback_analysis(description)
     
     def _fallback_analysis(self, description):
-        """Analyse de secours en cas d'échec LLM"""
-        # Extraction basique par mots-clés
+        """Fallback analysis in case of LLM failure"""
+        # Basic keyword extraction
         components = []
         keywords = ['RAG', 'LLM', 'API', 'vector', 'database', 'chatbot',
                    'agent', 'model', 'GPT', 'Cloud', 'AWS']

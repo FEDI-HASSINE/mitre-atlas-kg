@@ -81,11 +81,11 @@ class AtlasIngester:
         MATCH (t:Technique {id: technique_item})
         MERGE (m)-[:MITIGATES]->(t)
         """
-        # Extraire les IDs des techniques (peuvent être des dicts ou des strings)
+        # Extract technique IDs, which can be dictionaries or strings.
         technique_ids = []
         for tech in mitigation.get('techniques', []):
             if isinstance(tech, dict):
-                # Si c'est un dict avec 'id' et 'use'
+                # Dictionary entries can contain both 'id' and 'use'.
                 technique_ids.append(tech.get('id'))
             else:
                 technique_ids.append(tech)
@@ -134,79 +134,79 @@ class AtlasIngester:
                procedures=procedures)
     
     def load_from_yaml(self, yaml_path):
-        print(f"Chargement du fichier: {yaml_path}")
+        print(f"Loading file: {yaml_path}")
         with open(yaml_path, 'r') as f:
             data = yaml.safe_load(f)
         
-        print(f"Données chargées: version {data.get('version')}")
+        print(f"Data loaded: version {data.get('version')}")
         
         with self.driver.session() as session:
-            # 1. Charger les tactiques
-            print("chargement des tactiques...")
+            # 1. Load tactics.
+            print("Loading tactics...")
             for matrix in data.get('matrices', []):
                 tactics = matrix.get('tactics', [])
-                print(f"   → {len(tactics)} tactiques trouvées")
+                print(f"   → {len(tactics)} tactics found")
                 for tactic in tactics:
                     session.execute_write(self.create_tactic, tactic)
             
-            # 2. Charger les techniques
-            print("chargement des techniques...")
+            # 2. Load techniques.
+            print("Loading techniques...")
             for matrix in data.get('matrices', []):
                 techniques = matrix.get('techniques', [])
-                print(f"   → {len(techniques)} techniques trouvées")
+                print(f"   → {len(techniques)} techniques found")
                 for technique in techniques:
                     if technique.get('object-type') == 'technique':
-                        # Vérifier si c'est une sous-technique
+                        # Check whether this is a subtechnique.
                         if 'subtechnique-of' in technique:
                             session.execute_write(self.create_subtechnique, technique)
                         else:
                             session.execute_write(self.create_technique, technique)
             
-            # 3. Charger les mitigations (elles sont dans la matrice !)
-            print("chargement des mitigations...")
+            # 3. Load mitigations from the matrix.
+            print("Loading mitigations...")
             for matrix in data.get('matrices', []):
                 mitigations = matrix.get('mitigations', [])
-                print(f"   → {len(mitigations)} mitigations trouvées")
+                print(f"   → {len(mitigations)} mitigations found")
                 for mitigation in mitigations:
                     session.execute_write(self.create_mitigation, mitigation)
             
-            # 4. Charger les case studies
-            print("Chargement des case studies...")
+            # 4. Load case studies.
+            print("Loading case studies...")
             case_studies = data.get('case-studies', [])
-            print(f"   → {len(case_studies)} case studies trouvés")
+            print(f"   → {len(case_studies)} case studies found")
             for case_study in case_studies:
                 session.execute_write(self.create_case_study, case_study)
             
-            print("Ingestion terminée avec succès !")
+            print("Ingestion completed successfully!")
             
-            # Afficher un résumé
+            # Print a summary.
             result = session.run("""
                 MATCH (t:Tactic) RETURN count(t) as tactics
             """)
-            print(f"Nombre de tactiques: {result.single()['tactics']}")
+            print(f"Number of tactics: {result.single()['tactics']}")
             
             result = session.run("""
                 MATCH (t:Technique) RETURN count(t) as techniques
             """)
-            print(f"Nombre de techniques: {result.single()['techniques']}")
+            print(f"Number of techniques: {result.single()['techniques']}")
             
             result = session.run("""
                 MATCH (s:Subtechnique) RETURN count(s) as subtechniques
             """)
-            print(f"Nombre de sous-techniques: {result.single()['subtechniques']}")
+            print(f"Number of subtechniques: {result.single()['subtechniques']}")
             
             result = session.run("""
                 MATCH (m:Mitigation) RETURN count(m) as mitigations
             """)
-            print(f"Nombre de mitigations: {result.single()['mitigations']}")
+            print(f"Number of mitigations: {result.single()['mitigations']}")
             
             result = session.run("""
                 MATCH (c:CaseStudy) RETURN count(c) as case_studies
             """)
-            print(f"Nombre de case studies: {result.single()['case_studies']}")
+            print(f"Number of case studies: {result.single()['case_studies']}")
 
 if __name__ == "__main__":
-    print("Démarrage de l'ingestion MITRE ATLAS")
+    print("MITRE ATLAS ingestion start")
     print("=" * 50)
     
     yaml_path = 'data/raw/atlas-data/dist/ATLAS.yaml'

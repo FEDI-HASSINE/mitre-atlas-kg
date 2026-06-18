@@ -19,7 +19,7 @@ class MitigationOwnerInstantiator:
         self.driver.close()
 
     def set_mitigation_owner(self, tx, mitigation_id, mitigation_name, owned_by):
-        """Ajoute ou met à jour la propriété owned_by d'une mitigation"""
+        """Add or update the owned_by property for a mitigation."""
         query = """
         MATCH (m:Mitigation {id: $mitigation_id})
         SET m.owned_by = $owned_by
@@ -35,7 +35,7 @@ class MitigationOwnerInstantiator:
             return False
 
     def instanciate_from_csv(self, csv_path):
-        """Lit le CSV et instancie les owned_by"""
+        """Read the CSV file and instantiate owned_by values."""
         with open(csv_path, 'r', encoding='utf-8') as f:
             reader = csv.DictReader(f)
             rows = list(reader)
@@ -75,7 +75,7 @@ class MitigationOwnerInstantiator:
                 print(f"{error_count} erreurs rencontrées")
 
     def verify(self):
-        """Vérifie les mitigations avec owned_by"""
+        """Verify mitigations with owned_by values."""
         with self.driver.session() as session:
             result = session.run("""
                 MATCH (m:Mitigation) 
@@ -91,7 +91,7 @@ class MitigationOwnerInstantiator:
             print("=" * 60)
 
     def verify_by_owner(self):
-        """Vérifie le nombre de mitigations par propriétaire"""
+        """Verify the number of mitigations per owner."""
         with self.driver.session() as session:
             result = session.run("""
                 MATCH (m:Mitigation) 
@@ -107,7 +107,7 @@ class MitigationOwnerInstantiator:
             print("=" * 60)
 
     def create_index(self):
-        """Crée l'index sur owned_by si inexistant"""
+        """Create the owned_by index if it does not exist."""
         with self.driver.session() as session:
             try:
                 session.run("CREATE INDEX mitigation_owned_by_idx IF NOT EXISTS FOR (m:Mitigation) ON (m.owned_by)")
@@ -130,13 +130,13 @@ if __name__ == "__main__":
     try:
         instantiator = MitigationOwnerInstantiator(URI, USER, PASSWORD)
 
-        # Créer l'index
+        # Create the index.
         instantiator.create_index()
 
-        # Instancier les owned_by
+        # Instantiate owned_by values.
         instantiator.instanciate_from_csv(csv_path)
 
-        # Vérifier les résultats
+        # Verify the results.
         instantiator.verify()
         instantiator.verify_by_owner()
 
