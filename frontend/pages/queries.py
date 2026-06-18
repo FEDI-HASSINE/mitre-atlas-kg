@@ -22,7 +22,7 @@ st.set_page_config(
 st.title("🔍 Query Explorer")
 st.markdown("Explore the MITRE ATLAS knowledge graph with predefined and custom queries")
 
-# Initialiser
+# Initialize
 if 't2c' not in st.session_state:
     st.session_state.t2c = None
 
@@ -35,7 +35,7 @@ def init_connection():
             return False
     return True
 
-# Catégories de requêtes
+# Query Categories
 QUERY_CATEGORIES = {
     "🏛️ Basic Discovery": [
         "List all tactics",
@@ -214,9 +214,8 @@ if init_connection():
                 with col:
                     st.metric(label, stats.get(label, 0))
             
-            # ============================================================
-            # SEVERITY DISTRIBUTION - CORRIGÉ
-            # ============================================================
+        
+            # SEVERITY DISTRIBUTION - CORRECTED
             try:
                 severity_data = session.run("""
                     MATCH (t:Technique) 
@@ -247,9 +246,9 @@ if init_connection():
             except Exception as e:
                 st.warning(f"Could not load severity distribution: {e}")
             
-            # ============================================================
+            
             # COMPONENT DISTRIBUTION - CORRIGÉ
-            # ============================================================
+            
             try:
                 comp_data = session.run("""
                     MATCH (c:Component)<-[:TARGETS]-(t:Technique)

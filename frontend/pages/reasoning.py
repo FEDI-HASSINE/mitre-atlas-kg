@@ -34,7 +34,7 @@ def init_engine():
             return False
     return True
 
-# Description du système
+# System description
 system_description = st.text_area(
     "Describe your AI system:",
     placeholder="""

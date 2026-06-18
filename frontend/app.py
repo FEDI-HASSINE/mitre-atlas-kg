@@ -1,7 +1,7 @@
 # frontend/app.py
 """
 MITRE ATLAS Knowledge Graph - Web Interface
-Version améliorée avec UI/UX modernisé
+Enhanced version with modernized UI/UX
 """
 
 import streamlit as st
@@ -9,7 +9,8 @@ import sys
 import os
 from datetime import datetime
 
-# Ajouter le chemin du projet pour importer les modules
+
+# Add the project path to import the modules
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from src.query.text2cypher import Text2Cypher
@@ -17,9 +18,8 @@ from src.report.report_generator import ReportGenerator
 from src.reasoning import ReasoningEngine
 
 
-# ============================================================
-# CONFIGURATION DE LA PAGE
-# ============================================================
+# PAGE SETUP
+
 st.set_page_config(
     page_title="MITRE ATLAS Knowledge Graph",
     page_icon="🛡️",
@@ -28,9 +28,9 @@ st.set_page_config(
 )
 
 
-# ============================================================
-# CSS PERSONNALISÉ - TYPOGRAPHIE AMÉLIORÉE
-# ============================================================
+
+# CUSTOM CSS - IMPROVED TYPOGRAPHY
+
 st.markdown("""
 <style>
     /* --- TYPOGRAPHIE GLOBALE --- */
@@ -311,9 +311,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ============================================================
 # SESSION STATE
-# ============================================================
+
 if 't2c' not in st.session_state:
     st.session_state.t2c = None
 if 'report_gen' not in st.session_state:
@@ -328,9 +327,9 @@ if 'reasoning_result' not in st.session_state:
     st.session_state.reasoning_result = None
 
 
-# ============================================================
+
 # FONCTIONS
-# ============================================================
+
 def init_connections():
     """Initialiser les connexions aux services"""
     if st.session_state.t2c is None:
@@ -339,13 +338,13 @@ def init_connections():
             st.session_state.report_gen = ReportGenerator()
             st.session_state.reasoning_engine = ReasoningEngine()
         except Exception as e:
-            st.error(f"❌ Erreur de connexion: {e}")
+            st.error(f"❌ Error: {e}")
             return False
     return True
 
 
 def execute_query(question):
-    """Exécuter une requête et mettre à jour l'état"""
+    """Execute a query and update the state"""
     if not init_connections():
         return None
     try:
@@ -357,12 +356,12 @@ def execute_query(question):
         })
         return result
     except Exception as e:
-        st.error(f"❌ Erreur: {e}")
+        st.error(f"❌ Error: {e}")
         return {"error": str(e)}
 
 
 def run_reasoning(system_description):
-    """Exécuter le Reasoning Engine"""
+    """Execute the Reasoning Engine"""
     if not init_connections():
         return None
     try:
@@ -371,12 +370,12 @@ def run_reasoning(system_description):
             st.session_state.reasoning_result = result
             return result
     except Exception as e:
-        st.error(f"❌ Erreur: {e}")
+        st.error(f"❌ Error: {e}")
         return {"error": str(e)}
 
 
 def close_connections():
-    """Fermer les connexions"""
+    """Close the connections"""
     if st.session_state.t2c:
         try:
             st.session_state.t2c.close()
@@ -394,11 +393,11 @@ def close_connections():
             pass
 
 
-# ============================================================
+
 # SIDEBAR
-# ============================================================
+
 with st.sidebar:
-    # Logo stylisé (au lieu de l'image)
+    
     st.markdown("""
     <div class="sidebar-logo">
         <h1>🛡️ ATLAS</h1>
@@ -438,11 +437,11 @@ with st.sidebar:
     st.markdown("### 📊 Statistics")
     # Dans app.py, dans la partie Statistics du sidebar ou dans une nouvelle section
 
-# ============================================================
+
 # RECENTLY UPDATED TECHNIQUES (NOUVEAU)
-# ============================================================
+
 with st.sidebar:
-    # ... code existant ...
+    
     
     st.markdown("---")
     st.markdown("### 🔄 Recent Updates")
@@ -490,28 +489,28 @@ with st.sidebar:
             st.warning("⚠️ Cannot connect to Neo4j")
 
 
-# ============================================================
+
 # MAIN PAGE - HEADER
-# ============================================================
+
 st.markdown('<p class="main-header">🛡️ MITRE ATLAS Knowledge Graph</p>', unsafe_allow_html=True)
 st.markdown('<p class="sub-header">Query adversarial techniques against AI systems</p>', unsafe_allow_html=True)
 
 
-# ============================================================
+
 # TABS
-# ============================================================
+
 active_tab = st.session_state.get('active_tab', 'query')
 tab1, tab2, tab3, tab4 = st.tabs(["🔍 Query", "📊 Results", "📄 Report", "🧠 Reasoning"])
 
 
-# ============================================================
+
 # TAB 1: QUERY
-# ============================================================
+
 with tab1:
     st.markdown("### 🔍 Ask a question about AI threats")
     st.markdown("Enter your question in natural language and the system will translate it to a Cypher query.")
     
-    # Utilisation de colonnes pour aligner le champ et le bouton
+    # Using columns to align the field and the button
     col1, col2 = st.columns([5, 1])
     with col1:
         query = st.text_input(
@@ -521,7 +520,7 @@ with tab1:
             label_visibility="collapsed"
         )
     with col2:
-        # Ajustement vertical pour aligner avec le champ
+        # Vertical adjustment to align with the field
         st.write("")
         execute_btn = st.button("🔍 Execute", type="primary", width='stretch')
     
@@ -544,9 +543,9 @@ with tab1:
             st.error(f"❌ {result['error']}")
 
 
-# ============================================================
+
 # TAB 2: RESULTS
-# ============================================================
+
 with tab2:
     st.markdown("### 📊 Results History")
     
@@ -567,9 +566,9 @@ with tab2:
             st.markdown(f"- **{q['question']}** *(at {q.get('timestamp', '')})*")
 
 
-# ============================================================
+
 # TAB 3: REPORT
-# ============================================================
+
 with tab3:
     st.markdown("### 📄 Generate Threat Report")
     st.markdown("Describe the threat scenario or question to generate a structured report with traceable citations.")
@@ -602,9 +601,8 @@ with tab3:
             st.warning("⚠️ Please describe the threat scenario")
 
 
-# ============================================================
 # TAB 4: REASONING ENGINE
-# ============================================================
+
 with tab4:
     st.markdown("### 🧠 System Threat Assessment")
     st.markdown("""
@@ -648,7 +646,7 @@ The system is deployed on AWS and accessible via REST API.
             if result and "error" not in result:
                 st.success("✅ Threat assessment complete!")
                 
-                # Métriques
+                # Metrics
                 summary = result.get('summary', {})
                 total = sum(summary.values())
                 
@@ -664,12 +662,12 @@ The system is deployed on AWS and accessible via REST API.
                 with col5:
                     st.metric("🟢 Low", summary.get('low', 0))
                 
-                # Informations du système
+                # System Information
                 with st.expander("📋 System Profile", expanded=False):
                     system_info = result.get('system_info', {})
                     st.json(system_info)
                 
-                # Menaces identifiées
+                # Identified Threats
                 threats = result.get('threats', [])
                 if threats:
                     with st.expander(f"⚠️ Threats Found ({len(threats)})", expanded=True):
@@ -697,7 +695,7 @@ The system is deployed on AWS and accessible via REST API.
                                 st.markdown(f"   - Actors: {', '.join(actors[:3])}")
                             st.markdown("---")
                 
-                # Rapport complet
+                # Full Report
                 report = result.get('report', '')
                 if report:
                     with st.expander("📄 Full Report", expanded=True):
@@ -712,7 +710,7 @@ The system is deployed on AWS and accessible via REST API.
                         width='stretch'
                     )
                 
-                # Résumé exécutif
+                # Executive Summary
                 if generate_summary and report:
                     with st.expander("📊 Executive Summary", expanded=False):
                         try:
@@ -729,9 +727,8 @@ The system is deployed on AWS and accessible via REST API.
             st.warning("⚠️ Please describe your AI system.")
 
 
-# ============================================================
 # FOOTER
-# ============================================================
+
 st.markdown("""
 <div class="footer">
     <p>🛡️ MITRE ATLAS Knowledge Graph • Powered by Neo4j + Text2Cypher + OpenRouter</p>
@@ -740,8 +737,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# ============================================================
+
 # CLEANUP
-# ============================================================
+
 import atexit
 atexit.register(close_connections)
